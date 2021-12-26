@@ -55,9 +55,9 @@ def compute_data_choice_2(df):
 app.layout = html.Div(children=[ html.H1('US Domestic Airline Flight Performance',style={'textAlign':'left','color':'#503D36','font-size':24}),
                                 
                                 html.Div([
-                                    # Add an division
+                                
                                     html.Div([
-                                        # Create a division for adding dropdown helper text for report type
+                                        
                                         html.Div(
                                             [
                                             html.H2('Report Type:', style={'margin-right': '2em'}),
@@ -70,25 +70,24 @@ app.layout = html.Div(children=[ html.H1('US Domestic Airline Flight Performance
                                     
                                     ], style={'display':'flex'}),
                                     
-                                   # Add next division 
+                                   #
                                    html.Div([
-                                       # Create an division for adding dropdown helper text for choosing year
+                                    
                                         html.Div(
                                             [
                                             html.H2('Choose Year:', style={'margin-right': '2em'})
                                             ]
                                         ),
                                         dcc.Dropdown(id='input-year', 
-                                                     # Update dropdown values using list comphrehension
+                                                    
                                                      options=[{'label': i, 'value': i} for i in year_list],
                                                      placeholder="Select a year",
                                                      style={'width':'80%', 'padding':'3px', 'font-size': '20px', 'text-align-last' : 'center'}),
-                                            # Place them next to each other using the division style
+                                            
                                             ], style={'display': 'flex'}),  
                                           ]),
                                 
-                                # Add Computed graphs
-                                # REVIEW3: Observe how we add an empty division and providing an id that will be updated during callback
+                                
                                 html.Div([ ], id='plot1'),
     
                                 html.Div([
@@ -96,8 +95,7 @@ app.layout = html.Div(children=[ html.H1('US Domestic Airline Flight Performance
                                         html.Div([ ], id='plot3')
                                 ], style={'display': 'flex'}),
                                 
-                                # TASK3: Add a division with two empty divisions inside. See above disvision for example.
-                                # Enter your code below. Make sure you have correct formatting.
+                                
                                 html.Div([
                                     html.Div([ ],id = 'plot4'),
                                     html.Div([ ],id = 'plot5')
@@ -109,36 +107,36 @@ app.layout = html.Div(children=[ html.H1('US Domestic Airline Flight Performance
 @app.callback( [Output('plot1','children'),Output('plot2','children'),Output('plot3','children'),Output('plot4','children'),Output('plot5','children')],
                [Input(component_id='input-type', component_property='value'),
                 Input(component_id='input-year', component_property='value')],
-               # REVIEW4: Holding output state till user enters all the form information. In this case, it will be chart type and year
+    
                [State("plot1", 'children'), State("plot2", "children"),
                 State("plot3", "children"), State("plot4", "children"),
                 State("plot5", "children")
                ])
-# Add computation to callback function and return graph
+
 def get_graph(chart, year, children1, children2, c3, c4, c5):
       
-        # Select data
+    
         df =  airline_data[airline_data['Year']==int(year)]
        
         if chart == 'OPT1':
-            # Compute required information for creating graph from the data
+            
             bar_data, line_data, div_data, map_data, tree_data = compute_data_choice_1(df)
             
-            # Number of flights under different cancellation categories
+            
             bar_fig = px.bar(bar_data, x='Month', y='Flights', color='CancellationCode', title='Monthly Flight Cancellation')
             
-            # Average flight time by reporting airline
+            
             line_fig = px.line(line_data,x='Month',y='AirTime',color='Reporting_Airline',title='Average monthly flight time (minutes) by airline')
             
-            # Percentage of diverted airport landings per reporting airline
+            
             pie_fig = px.pie(div_data, values='Flights', names='Reporting_Airline', title='% of flights by reporting airline')
             
-            #Number of flights flying from each state using choropleth
+            
             map_fig = px.choropleth(map_data,  # Input data
                     locations='OriginState', 
                     color='Flights',  
                     hover_data=['OriginState', 'Flights'], 
-                    locationmode = 'USA-states', # Set to plot as US States
+                    locationmode = 'USA-states', 
                     color_continuous_scale='GnBu',
                     range_color=[0, map_data['Flights'].max()]) 
             map_fig.update_layout(
@@ -150,7 +148,7 @@ def get_graph(chart, year, children1, children2, c3, c4, c5):
             
             
             
-            # REVIEW6: Return dcc.Graph component to the empty division
+            
             return [dcc.Graph(figure=tree_fig), 
                     dcc.Graph(figure=pie_fig),
                     dcc.Graph(figure=map_fig),
